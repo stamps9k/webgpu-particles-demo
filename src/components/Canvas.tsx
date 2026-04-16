@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { logger } from "../libs/debug_config.mjs"
-import { init, ParticleContext } from "webgpu-particles";
+import { init, ParticleEngine } from "webgpu-particles";
 
 const Canvas = () => {
-    const [ctx, setCtx] = useState<ParticleContext>();
+    const [ctx, setCtx] = useState<ParticleEngine>();
 
     // Create the webgpu context on intial load of page
     useEffect(() => {
@@ -38,14 +38,7 @@ const Canvas = () => {
     // Set the background to red to test the context was created correctly
     useEffect(() => {
         if (!ctx) return;
-        
-        // ctx is defined here, and this runs whenever ctx updates
-        const encoder = ctx.beginFrame();
-        const pass = encoder.beginRenderPass(
-            ctx.createRenderPassDescriptor({ r: 1, g: 0, b: 0, a: 1 })
-        );
-        pass.end();
-        ctx.endFrame(encoder);
+        ctx.context_check();
     }, [ctx]);
 
     return (
