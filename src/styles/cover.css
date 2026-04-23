@@ -52,6 +52,11 @@ body {
   max-width: 50em;
 }
 
+canvas {
+    width: 736px;
+    height: 480px;
+    display: block;
+}
 
 /*
  * Header

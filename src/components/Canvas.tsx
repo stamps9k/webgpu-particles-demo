@@ -4,13 +4,35 @@ import { logger } from "../libs/debug_config.mjs"
 import { init, ParticleEngine, ParticleType } from "webgpu-particles";
 
 const Canvas = () => {
+	const buttonRef = useRef<HTMLButtonElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const initialised = useRef(false);
 	const [ctx, setCtx] = useState<ParticleEngine>();
 
     // Create the webgpu context on intial load of page
     useEffect(() => {
-				if (initialised.current) return;
+				// Set up the fullscreen button callback code
+				const button = buttonRef.current;
+				const canvas = canvasRef.current;
+
+				if (initialised.current || !button || !canvas) return;
 				initialised.current = true;
+
+				// Add event listener to handle button click
+				button.addEventListener('click', () => {
+					if (!document.fullscreenElement) {
+						canvas.requestFullscreen();
+					} else {
+						document.exitFullscreen();
+					}
+
+					// Monitor the canvas width and height and update when it goes fullscreen
+					const resizeObserver = new ResizeObserver(() => {
+						canvas.width  = canvas.clientWidth;
+						canvas.height = canvas.clientHeight;
+					});
+					resizeObserver.observe(canvas);
+				});
 
         try {
             const canvas_element = document.getElementById("webgpuCanvas");
@@ -49,7 +71,8 @@ const Canvas = () => {
     return (
         <div>
             <h1>WebGPU Particles Demo</h1>
-            <canvas id="webgpuCanvas" className="border" width="736" height="480"></canvas>
+						<canvas id="webgpuCanvas" className="border" ref={canvasRef}></canvas>
+						<button id="fullscreen-btn" ref={buttonRef}>Fullscreen</button>
         </div>
     );
 };
