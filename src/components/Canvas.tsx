@@ -41,7 +41,7 @@ const Canvas = () => {
             }
 
             const run = async () => {
-							const newCtx = setCtx(await init(canvas_element, 500));
+							const newCtx = setCtx(await init(canvas_element, 5000));
             };
             run();
         } catch (error) {
@@ -71,7 +71,7 @@ const Canvas = () => {
     return (
         <div>
             <h1>WebGPU Particles Demo</h1>
-						<canvas id="webgpuCanvas" className="border" ref={canvasRef}></canvas>
+						<canvas id="webgpuCanvas" className="border" ref={canvasRef} width="734" height="478"></canvas>
 						<button id="fullscreen-btn" ref={buttonRef}>Fullscreen</button>
         </div>
     );
