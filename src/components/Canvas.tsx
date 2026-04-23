@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { logger } from "../libs/debug_config.mjs"
-import { init, ParticleEngine } from "webgpu-particles";
+import { init, ParticleEngine, ParticleType } from "webgpu-particles";
 
 const Canvas = () => {
-    const [ctx, setCtx] = useState<ParticleEngine>();
+	const initialised = useRef(false);
+	const [ctx, setCtx] = useState<ParticleEngine>();
 
     // Create the webgpu context on intial load of page
     useEffect(() => {
+				if (initialised.current) return;
+				initialised.current = true;
+
         try {
             const canvas_element = document.getElementById("webgpuCanvas");
             if (!(canvas_element instanceof HTMLCanvasElement)) {
@@ -15,7 +19,7 @@ const Canvas = () => {
             }
 
             const run = async () => {
-                const newCtx = setCtx(await init(canvas_element));
+							const newCtx = setCtx(await init(canvas_element, 500));
             };
             run();
         } catch (error) {
@@ -38,7 +42,8 @@ const Canvas = () => {
     // Set the background to red to test the context was created correctly
     useEffect(() => {
         if (!ctx) return;
-        ctx.context_check();
+        //ctx.context_check();
+				requestAnimationFrame(() => ctx.animate_particles());
     }, [ctx]);
 
     return (
