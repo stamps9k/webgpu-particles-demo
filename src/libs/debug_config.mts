@@ -57,4 +57,4 @@ logger["error_webapp"]("Error debugging enabled for JavaScript OPFS.");
 /*---------------------------------------------------------------------------*/
 
 // Export from this module for access in rest of project 
-export { logger };
+export { logger, logger_api };

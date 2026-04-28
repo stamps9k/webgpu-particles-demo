@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import {fileURLToPath} from 'url';
-import { models_routes } from "./api/models.mjs";
+import { models_routes } from "./api/shader_sets.mjs";
 
 import { config } from "dotenv";
 config();
@@ -28,6 +28,8 @@ console.log("");
 console.log("");
 
 app.get("/{*path}", (req, res) => {
+	console.log(req.path);
+	console.log("Test");
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
