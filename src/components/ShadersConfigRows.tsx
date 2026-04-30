@@ -1,11 +1,15 @@
-import { response } from "express";
-import { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ShaderConfigRows = () => {
+	//State variables
 	const [shader_configs, set_shader_configs] = useState<Array<Record<string,string>>>([{}]);
 	const [options_map, set_options_map] = useState<Record<string, Array<string>>>({});
 
-	//Get initial values for configuration items
+	//Configuration values in query string
+	const [searchParams] = useSearchParams();
+
+	//Get list of configuration items
 	useEffect( () => {
 		const fetchAll = async () => {
 			const results = await fetchConfigItems("1");
@@ -69,27 +73,32 @@ const ShaderConfigRows = () => {
 								<label htmlFor="config">{config_item.shader_config_name}:</label>
 							</div>
 							<div id="configElement" className="col-1">
-								<input id={config_item.shader_config_display_name} name={config_item.shader_config_name} type="field" />
+								<input id={config_item.shader_config_display_name} name={config_item.shader_config_name} type="field" defaultValue={searchParams.get(config_item.shader_config_name) ?? undefined}/>
 							</div>
 						</div>
 					);
 				case "SELECTION":
-						return (
-							<div key={index.toString()} id={index.toString()} className="ms-auto text-start py-1 row">
-								<div id="configLabel" className="col-3">
-									<label htmlFor="config">{ config_item.shader_config_display_name }:</label>
-								</div>
-								<div id="configElement" className="col-1">
-									<select id={ config_item.shader_config_name } name={ config_item.shader_config_name }> 	
-										{ options_map[config_item.shader_config_id]?.map((config_option, index) => {
-												return (
-													<option key={index} value={config_option}>{config_option}</option>
-												);
-											})}
-									</select>
-								</div>
+					return (
+						<div key={index.toString()} id={index.toString()} className="ms-auto text-start py-1 row">
+							<div id="configLabel" className="col-3">
+								<label htmlFor="config">{ config_item.shader_config_display_name }:</label>
 							</div>
-						);
+							<div id="configElement" className="col-1">
+								<select 
+									key={ options_map[config_item.shader_config_id]?.join(',') }
+									id={ config_item.shader_config_name } 
+									name={ config_item.shader_config_name } 
+									defaultValue={ searchParams.get(config_item.shader_config_name) ?? undefined }
+								> 	
+								{ options_map[config_item.shader_config_id]?.map((config_option, index) => {
+									return (
+										<option key={index} value={config_option}>{config_option}</option>
+									);
+								})}
+								</select>
+							</div>
+						</div>
+					);
 				default:
 					return (<div key="sadf">Test</div>);
 			}
