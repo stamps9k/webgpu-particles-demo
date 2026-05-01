@@ -22,7 +22,7 @@ const ShaderSetRow = () => {
 				<label htmlFor="shader">Shader: </label>
 			</div>
 			<div id="shaderElement" className="col-1">
-				<select id="shader_set" name="shader_set"> 
+				<select id="shader-set" name="shader-set"> 
 					{ shader_sets.map(
 						(shader_set) => (
 							<option key={shader_set.shader_set_id} value={shader_set.shader_set_name}>

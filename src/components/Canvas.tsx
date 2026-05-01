@@ -16,6 +16,7 @@ const Canvas = () => {
 	const [searchParams] = useSearchParams();
 	const MAX_PARTICLES = parseInt(searchParams.get("max-particles")?? "1", 10);
 	const EMITTER_SHAPE = searchParams.get("emitter-shape") ?? "POINT";
+	const SHADER_SET = searchParams.get("shader-set") ?? "scatter_fade";
 
     // Create the webgpu context on intial load of page
     useEffect(() => {
@@ -50,7 +51,7 @@ const Canvas = () => {
 
             const run = async () => {
 							//Fetch defined variables
-							const newCtx = await init(canvas_element, MAX_PARTICLES, EMITTER_SHAPE);
+							const newCtx = await init(canvas_element, MAX_PARTICLES, EMITTER_SHAPE, SHADER_SET);
 							setCtx(newCtx);
             };
             run();
