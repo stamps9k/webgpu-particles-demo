@@ -20,29 +20,6 @@ const Canvas = () => {
 
     // Create the webgpu context on intial load of page
     useEffect(() => {
-				// Set up the fullscreen button callback code
-				const button = buttonRef.current;
-				const canvas = canvasRef.current;
-
-				if (initialised.current || !button || !canvas) return;
-				initialised.current = true;
-
-				// Add event listener to handle button click
-				button.addEventListener('click', () => {
-					if (!document.fullscreenElement) {
-						canvas.requestFullscreen();
-					} else {
-						document.exitFullscreen();
-					}
-
-					// Monitor the canvas width and height and update when it goes fullscreen
-					const resizeObserver = new ResizeObserver(() => {
-						canvas.width  = canvas.clientWidth;
-						canvas.height = canvas.clientHeight;
-					});
-					resizeObserver.observe(canvas);
-				});
-
         try {
             const canvas_element = document.getElementById("webgpuCanvas");
             if (!(canvas_element instanceof HTMLCanvasElement)) {
@@ -72,9 +49,38 @@ const Canvas = () => {
         }
     }, []);
 
-    // Set the background to red to test the context was created correctly
+		//Start animation and register the fullscreen button handler once the WebGPU context is created
     useEffect(() => {
         if (!ctx) return;
+
+				const button = buttonRef.current;
+				const canvas = canvasRef.current;
+
+				if (initialised.current || !button || !canvas) return;
+				initialised.current = true;
+
+				// Add event listener to handle button click
+				button.addEventListener('click', () => {
+					if (ctx !== undefined) {
+						if (!document.fullscreenElement) {
+							canvas.requestFullscreen();
+						} else {
+							document.exitFullscreen();
+						}
+					} else {
+						console.error("No context defined");
+					}
+
+					// Monitor the canvas width and height and update when it goes fullscreen
+					const resizeObserver = new ResizeObserver(() => {
+						canvas.width  = canvas.clientWidth;
+						canvas.height = canvas.clientHeight;
+						ctx.resize(canvas);
+					});
+					resizeObserver.observe(canvas);
+				});
+
+				//Start the animation
 				requestAnimationFrame(() => ctx.animate_particles());
     }, [ctx]);
 
