@@ -43,7 +43,8 @@ const ShaderConfigRows = () => {
 
 	async function fetchConfigItems(shader_id: string): Promise<Array<Record<string, string>>> {
 		try {
-			const result = await fetch("/api/shader-configs")
+			const shader_set = searchParams.get("shader-set");
+			const result = await fetch("/api/shader-configs?shader_set=" + shader_set);
 			const data = await result.json();
 			return data.message;
 		} catch (e) {

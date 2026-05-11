@@ -30,7 +30,8 @@ var shader_configs_query_string = (
 	config_types.name AS config_type_name
 	FROM shader_configs
 	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id 
-	WHERE shader_configs.shader_id = ?`
+	INNER JOIN shader_sets ON shader_configs.shader_id = shader_sets.shader_set_id
+	WHERE shader_sets.name = ?`
 );
 
 var shader_config_selection_items_query_string = (
@@ -69,11 +70,11 @@ const shader_sets_query_promise = () => {
 	)
 }
 
-const shader_configs_query_promise = (shader_id: string) => {
+const shader_configs_query_promise = (shader_set: string) => {
 	return new Promise(
 		(resolve, reject) => {
 			logger_api["super_verbose_api_db"]("Running query " + shader_configs_query_string + "...");
-			const results = db.prepare(shader_configs_query_string).all(shader_id);
+			const results = db.prepare(shader_configs_query_string).all(shader_set);
 			logger_api["super_verbose_api_db"]("... query completed.");
 			resolve(results);
 		}
@@ -140,14 +141,14 @@ models_routes.get('/api/shader-sets', async (req, res) => {
 
 // API Route to get all config optinos for a shader set
 models_routes.get('/api/shader-configs', async (req, res) => {
-	if (req.query.shader_id == null || req.query.shader_id == undefined) {
-		var shader_id = "1";
+	if (req.query.shader_set == null || req.query.shader_set == undefined) {
+		var shader_set = "scatter-fade";
 	} else {
-		var shader_id = req.query.shader_id as string;
+		var shader_set = req.query.shader_set as string;
 	logger_api["info_api_db"]("Processing request: " + req.url);
 	} try {
   	logger_api["info_api_db"]("Querying database...");
-		var message = await shader_configs_query_promise(shader_id);
+		var message = await shader_configs_query_promise(shader_set);
 		logger_api["info_api_db"]("...database query complete.");
 		logger_api["super_verbose_api_db"]("Returning " + JSON.stringify(message));
 		res.json({ success: true, message });
