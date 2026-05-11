@@ -15,7 +15,7 @@ const Canvas = () => {
 	//Process any query string parameters
 	const [searchParams] = useSearchParams();
 	const SHADER_CONFIG = Object.fromEntries(searchParams);
-	const SHADER_SET = searchParams.get("shader-set") ?? "scatter_fade";
+	const SHADER_SET = searchParams.get("shader-set") ?? "scatter-fade";
 
     // Create the webgpu context on intial load of page
     useEffect(() => {

@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 const ShaderSetRow = () => {
 	//Configuration values in query string
-	const [searchParams, set_search_params] = useSearchParams();
+	const [search_params, set_search_params] = useSearchParams();
 
 	const [shader_sets, set_shader_sets] = useState([{ 
 		shader_set_id: 1, shader_set_name: "scatter-fade", shader_set_display_name: "Scatter Fade"
@@ -31,7 +31,7 @@ const ShaderSetRow = () => {
 				<label htmlFor="shader">Shader: </label>
 			</div>
 			<div id="shaderElement" className="col-1">
-				<select id="shader-set" name="shader-set" onChange={handle_shader_change}> 
+				<select id="shader-set" name="shader-set" onChange={handle_shader_change} value={ search_params.get("shader-set") ?? "" }> 
 					{ shader_sets.map(
 						(shader_set) => (
 							<option key={shader_set.shader_set_id} value={shader_set.shader_set_name}>
