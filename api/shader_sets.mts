@@ -22,6 +22,18 @@ var shader_sets_query_string = (
 	FROM shader_sets`
 );
 
+var all_shader_configs_query_string = (
+	`SELECT
+	shader_sets.name AS shader_set_name,
+	shader_configs.shader_config_id AS shader_config_id, 
+	shader_configs.name AS shader_config_name, 
+	shader_configs.display_name AS shader_config_display_name,
+	config_types.name AS config_type_name
+	FROM shader_configs
+	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id
+	INNER JOIN shader_sets ON shader_configs.shader_id = shader_sets.shader_set_id`
+);
+
 var shader_configs_query_string = (
 	`SELECT
 	shader_configs.shader_config_id AS shader_config_id, 
@@ -64,6 +76,17 @@ const shader_sets_query_promise = () => {
 		(resolve, reject) => {
 			logger_api["super_verbose_api_db"]("Running query " + shader_set_shaders_query_string + "...");
 			const results = db.prepare(shader_sets_query_string).all();
+			logger_api["super_verbose_api_db"]("... query completed.");
+			resolve(results);
+		}
+	)
+}
+
+const all_shader_configs_query_promise = () => {
+	return new Promise(
+		(resolve, reject) => {
+			logger_api["super_verbose_api_db"]("Running query " + shader_configs_query_string + "...");
+			const results = db.prepare(all_shader_configs_query_string).all();
 			logger_api["super_verbose_api_db"]("... query completed.");
 			resolve(results);
 		}
@@ -141,17 +164,21 @@ models_routes.get('/api/shader-sets', async (req, res) => {
 
 // API Route to get all config optinos for a shader set
 models_routes.get('/api/shader-configs', async (req, res) => {
-	if (req.query.shader_set == null || req.query.shader_set == undefined) {
-		var shader_set = "scatter-fade";
-	} else {
-		var shader_set = req.query.shader_set as string;
 	logger_api["info_api_db"]("Processing request: " + req.url);
-	} try {
-  	logger_api["info_api_db"]("Querying database...");
-		var message = await shader_configs_query_promise(shader_set);
-		logger_api["info_api_db"]("...database query complete.");
-		logger_api["super_verbose_api_db"]("Returning " + JSON.stringify(message));
-		res.json({ success: true, message });
+	try {
+		if (req.query.shader_set == null || req.query.shader_set == undefined) {
+			logger_api["info_api_db"]("Querying database...");
+			var message = await all_shader_configs_query_promise();
+			logger_api["info_api_db"]("...database query complete.");
+			logger_api["super_verbose_api_db"]("Returning " + JSON.stringify(message));
+			res.json({ success: true, message }); 
+		} else {
+			logger_api["info_api_db"]("Querying database...");
+			var message = await shader_configs_query_promise(req.query.shader_set as string);
+			logger_api["info_api_db"]("...database query complete.");
+			logger_api["super_verbose_api_db"]("Returning " + JSON.stringify(message));
+			res.json({ success: true, message });
+		}
 	} catch (err) {
 		var e = err as Error;
 		logger_api["error_api_db"]("Error processing query: " + err);  
