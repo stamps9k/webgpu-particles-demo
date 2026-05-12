@@ -1,96 +1,102 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import { logger } from "../libs/debug_config.mjs"
+import { ToastContainer, toast } from "react-toastify";
+import { logger } from "../libs/debug_config.mjs";
 import { init, ParticleEngine, ParticleType } from "webgpu-particles";
 
 import ModelForm from "./ModelForm";
 
 const Canvas = () => {
-	const buttonRef = useRef<HTMLButtonElement>(null);
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const initialised = useRef(false);
-	const [ctx, setCtx] = useState<ParticleEngine>();
+  const button_ref = useRef<HTMLButtonElement>(null);
+  const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const initialised = useRef(false);
+  const [ctx, set_ctx] = useState<ParticleEngine>();
 
-	//Process any query string parameters
-	const [searchParams] = useSearchParams();
-	const SHADER_CONFIG = Object.fromEntries(searchParams);
-	const SHADER_SET = searchParams.get("shader-set") ?? "scatter-fade";
+  //Process any query string parameters
+  const [search_params] = useSearchParams();
+  const SHADER_CONFIG = Object.fromEntries(search_params);
+  const SHADER_SET = search_params.get("shader-set") ?? "scatter-fade";
 
-    // Create the webgpu context on intial load of page
-    useEffect(() => {
-        try {
-            const canvas_element = document.getElementById("webgpuCanvas");
-            if (!(canvas_element instanceof HTMLCanvasElement)) {
-                throw new Error("Element not found or is not a canvas");
-            }
+  // Create the webgpu context on intial load of page
+  useEffect(() => {
+    try {
+      const canvas_element = document.getElementById("webgpuCanvas");
+      if (!(canvas_element instanceof HTMLCanvasElement)) {
+        throw new Error("Element not found or is not a canvas");
+      }
 
-            const run = async () => {
-							//Fetch defined variables
-							const newCtx = await init(canvas_element, SHADER_SET, SHADER_CONFIG);
-							setCtx(newCtx);
-            };
-            run();
-        } catch (error) {
-            if (error instanceof Error) {
-                logger["error_webgpu"](error.message);
-                toast.error
-                (
-                    <span>
-                        Error on start:
-                        <br />
-                        {error.message}
-                    </span>
-                );
-                return;
-            }
-            throw error; // Not standard error type. Don't know when this would happen but throw for now.
+      const run = async () => {
+        //Fetch defined variables
+        const new_ctx = await init(canvas_element, SHADER_SET, SHADER_CONFIG);
+        set_ctx(new_ctx);
+      };
+      run();
+    } catch (error) {
+      if (error instanceof Error) {
+        logger["error_webgpu"](error.message);
+        toast.error(
+          <span>
+            Error on start:
+            <br />
+            {error.message}
+          </span>,
+        );
+        return;
+      }
+      throw error; // Not standard error type. Don't know when this would happen but throw for now.
+    }
+  }, []);
+
+  //Start animation and register the fullscreen button handler once the WebGPU context is created
+  useEffect(() => {
+    if (!ctx) return;
+
+    const button = button_ref.current;
+    const canvas = canvas_ref.current;
+
+    if (initialised.current || !button || !canvas) return;
+    initialised.current = true;
+
+    // Add event listener to handle button click
+    button.addEventListener("click", () => {
+      if (ctx !== undefined) {
+        if (!document.fullscreenElement) {
+          canvas.requestFullscreen();
+        } else {
+          document.exitFullscreen();
         }
-    }, []);
+      } else {
+        console.error("No context defined");
+      }
 
-		//Start animation and register the fullscreen button handler once the WebGPU context is created
-    useEffect(() => {
-        if (!ctx) return;
+      // Monitor the canvas width and height and update when it goes fullscreen
+      const resize_observer = new ResizeObserver(() => {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        ctx.resize(canvas);
+      });
+      resize_observer.observe(canvas);
+    });
 
-				const button = buttonRef.current;
-				const canvas = canvasRef.current;
+    //Start the animation
+    requestAnimationFrame(() => ctx.animate_particles());
+  }, [ctx]);
 
-				if (initialised.current || !button || !canvas) return;
-				initialised.current = true;
-
-				// Add event listener to handle button click
-				button.addEventListener('click', () => {
-					if (ctx !== undefined) {
-						if (!document.fullscreenElement) {
-							canvas.requestFullscreen();
-						} else {
-							document.exitFullscreen();
-						}
-					} else {
-						console.error("No context defined");
-					}
-
-					// Monitor the canvas width and height and update when it goes fullscreen
-					const resizeObserver = new ResizeObserver(() => {
-						canvas.width  = canvas.clientWidth;
-						canvas.height = canvas.clientHeight;
-						ctx.resize(canvas);
-					});
-					resizeObserver.observe(canvas);
-				});
-
-				//Start the animation
-				requestAnimationFrame(() => ctx.animate_particles());
-    }, [ctx]);
-
-    return (
-        <div>
-            <h1>WebGPU Particles Demo</h1>
-						<ModelForm />
-						<canvas id="webgpuCanvas" className="border" ref={canvasRef} width="734" height="478"></canvas>
-						<button id="fullscreen-btn" ref={buttonRef}>Fullscreen</button>
-        </div>
-    );
+  return (
+    <div>
+      <h1>WebGPU Particles Demo</h1>
+      <ModelForm />
+      <canvas
+        id="webgpuCanvas"
+        className="border"
+        ref={canvas_ref}
+        width="734"
+        height="478"></canvas>
+      <button id="fullscreen-btn" ref={button_ref}>
+        Fullscreen
+      </button>
+    </div>
+  );
 };
 
 export default Canvas;
