@@ -38,9 +38,7 @@ const ModelForm = () => {
         <div className="border border-light card-body py-1">
           <form id="model" target="_self" method="get" action="/index.html">
             <div id="headingRow" className="ms-auto text-start row">
-              <h3 htmlFor="shader" className="text-decoration-underline">
-                Shader Selection
-              </h3>
+              <h3 className="text-decoration-underline">Shader Selection</h3>
             </div>
             <ShaderSetRow />
             <ShaderConfigRows />
