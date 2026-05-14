@@ -2,7 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { logger } from "../libs/debug_config.mjs";
-import { init, ParticleEngine, ParticleType } from "webgpu-particles";
+import { init_particle_engine } from "../libs/particle_engine.mjs";
+import {
+  init,
+  ParticleEngine,
+  ScatterFadeEffect,
+  EmitterConfig,
+} from "webgpu-particles";
 
 import ModelForm from "./ModelForm";
 
@@ -16,6 +22,7 @@ const Canvas = () => {
   const [search_params] = useSearchParams();
   const SHADER_CONFIG = Object.fromEntries(search_params);
   const SHADER_SET = search_params.get("shader-set") ?? "scatter-fade";
+  const EMITTER_SHAPE = search_params.get("emitter-shape") ?? "point";
 
   // Create the webgpu context on intial load of page
   useEffect(() => {
@@ -27,7 +34,12 @@ const Canvas = () => {
 
       const run = async () => {
         //Fetch defined variables
-        const new_ctx = await init(canvas_element, SHADER_SET, SHADER_CONFIG);
+        const new_ctx = await init_particle_engine(
+          canvas_element,
+          SHADER_SET,
+          SHADER_CONFIG,
+          EMITTER_SHAPE,
+        );
         set_ctx(new_ctx);
       };
       run();
