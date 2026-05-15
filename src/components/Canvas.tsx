@@ -20,7 +20,11 @@ const Canvas = () => {
 
   //Process any query string parameters
   const [search_params] = useSearchParams();
-  const SHADER_CONFIG = Object.fromEntries(search_params);
+
+  var SHADER_CONFIG: Record<string, string> = {};
+  if (search_params.size == 0) SHADER_CONFIG = { "max-particles": "500" };
+  else SHADER_CONFIG = Object.fromEntries(search_params);
+
   const SHADER_SET = search_params.get("shader-set") ?? "scatter-fade";
   const EMITTER_SHAPE = search_params.get("emitter-shape") ?? "point";
 

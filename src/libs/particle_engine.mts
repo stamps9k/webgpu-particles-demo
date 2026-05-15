@@ -26,20 +26,20 @@ function generate_particle_effect(shader_set: string, shader_config: Record<stri
 		case "FIREWORKS":
 			return new FireworksEffect(Number.parseInt(shader_config["max-particles"]), Number.parseInt(shader_config["rocket-count"]));
 		default:
-			return new ScatterFadeEffect(Number.parseInt(shader_config["max-particles"]));
+			throw new Error("Unknown shader set " + shader_set + "given.");
 	}
 }
 
-function generate_emitter_config(emitter_type: string, pos: [number, number], emitterP1: number, emitterP2: number): EmitterConfig {
+function generate_emitter_config(emitter_type: string, emitter_pos: [number, number], emitter_p1: number, emitter_p2: number): EmitterConfig {
 	switch (emitter_type.toUpperCase()) {
 		case "POINT":
-			return { emitterType: "point", emitterPos: pos, emitterP1: null, emitterP2: null }
+			return new EmitterConfig("point", emitter_pos, null, null);
 		case "CIRCLE":
-			return { emitterType: "circle", emitterPos: pos, emitterP1: 50, emitterP2: null }
+			return new EmitterConfig("circle", emitter_pos, 50, null);
 		case "RECTANGLE":
-			return { emitterType: "rect", emitterPos: pos, emitterP1: emitterP1, emitterP2: emitterP2}
+			return new EmitterConfig("rect", emitter_pos, emitter_p1, emitter_p2);
 		default:
-			return { emitterType: "point", emitterPos: pos, emitterP1: null, emitterP2: null }
+			throw new Error("Unkown emitter type " + emitter_type + "given.");	
 	}
 } 
 
