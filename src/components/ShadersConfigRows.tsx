@@ -135,7 +135,17 @@ const ShaderConfigRows = () => {
               <input
                 id={config_item.shader_config_display_name}
                 name={config_item.shader_config_name}
-                type="field"
+                type="text"
+                pattern={config_item.shader_config_validation_expression}
+                onInvalid={(e) =>
+                  (e.target as HTMLInputElement).setCustomValidity(
+                    "Field must match format: " +
+                      config_item.shader_config_validation_expression,
+                  )
+                }
+                onInput={(e) =>
+                  (e.target as HTMLInputElement).setCustomValidity("")
+                }
                 defaultValue={
                   search_params.get(config_item.shader_config_name) ?? undefined
                 }
