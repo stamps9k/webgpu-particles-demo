@@ -12,9 +12,14 @@ async function init_particle_engine(canvas: HTMLCanvasElement, shader_set: strin
 			break;
 	}
 
-	var engine: ParticleEngine = await ParticleEngine.init(canvas, effect, emitter_config)
+	try {
+		var engine: ParticleEngine = await ParticleEngine.init(canvas, effect, emitter_config)
+		return engine;
+	} catch (e) {
+		// In the event of an error pass up to the app for handling
+		throw e;
+	}
 
-	return engine;
 }
 
 function generate_particle_effect(shader_set: string, shader_config: Record<string, string>): ParticleEffect {

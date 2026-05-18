@@ -16,6 +16,7 @@ const Canvas = () => {
   const button_ref = useRef<HTMLButtonElement>(null);
   const canvas_ref = useRef<HTMLCanvasElement>(null);
   const initialised = useRef(false);
+  const [error, set_error] = useState<Error | null>(null);
   const [ctx, set_ctx] = useState<ParticleEngine>();
 
   //Process any query string parameters
@@ -30,13 +31,13 @@ const Canvas = () => {
 
   // Create the webgpu context on intial load of page
   useEffect(() => {
-    try {
-      const canvas_element = document.getElementById("webgpuCanvas");
-      if (!(canvas_element instanceof HTMLCanvasElement)) {
-        throw new Error("Element not found or is not a canvas");
-      }
+    const run = async () => {
+      try {
+        const canvas_element = document.getElementById("webgpuCanvas");
+        if (!(canvas_element instanceof HTMLCanvasElement)) {
+          throw new Error("Element not found or is not a canvas");
+        }
 
-      const run = async () => {
         //Fetch defined variables
         const new_ctx = await init_particle_engine(
           canvas_element,
@@ -45,23 +46,24 @@ const Canvas = () => {
           EMITTER_SHAPE,
         );
         set_ctx(new_ctx);
-      };
-      run();
-    } catch (error) {
-      if (error instanceof Error) {
-        logger["error_webgpu"](error.message);
-        toast.error(
-          <span>
-            Error on start:
-            <br />
-            {error.message}
-          </span>,
-        );
-        return;
+      } catch (error) {
+        if (error instanceof Error) set_error(error);
       }
-      throw error; // Not standard error type. Don't know when this would happen but throw for now.
-    }
+    };
+    run();
   }, []);
+
+  useEffect(() => {
+    if (!error) return;
+
+    toast.error(
+      <span>
+        Error on start:
+        <br />
+        {error.message}
+      </span>,
+    );
+  }, [error]);
 
   //Start animation and register the fullscreen button handler once the WebGPU context is created
   useEffect(() => {
@@ -111,6 +113,7 @@ const Canvas = () => {
       <button id="fullscreen-btn" ref={button_ref}>
         Fullscreen
       </button>
+      <ToastContainer />
     </div>
   );
 };
