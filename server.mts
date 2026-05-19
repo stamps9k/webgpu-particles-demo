@@ -7,9 +7,8 @@ import { models_routes } from "./api/shader_sets.mjs";
 import { config } from "dotenv";
 config();
 
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = path.resolve(__filename, "..");
-const __dirname = path.join(process.cwd());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.resolve(__filename, "..");
 
 const app = express();
 const PORT = process.env.PORT || 3000;

@@ -27,7 +27,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite --config config/vite.config.ts",
-    "build": "tsc --project config/tsconfig.server.json --noEmit && vite --config config/vite.config.ts build && tsup --config config/tsup.config.ts",
+    "build": "tsc --project config/tsconfig.server.json --noEmit && vite --config config/vite.config.ts build && tsup --config config/tsup.config.ts && mkdir -p dist/database && cp database/app.db dist/database/app.db",
     "start-prod": "node dist/server.mjs",
     "start-dev": "nodemon --exec tsx server.mts",
     "preview": "vite preview",

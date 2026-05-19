@@ -1,13 +1,14 @@
 //NPM imports
-import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 import db_import from "better-sqlite3";
+import { dirname, join } from 'path';
 
 import { logger_api } from "../src/libs/debug_config.mjs";
 
 // Variables
-const dbPath = path.join(process.cwd(), "database/app.db");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const dbPath = join(__dirname, '../database/app.db');
 
 const db = db_import(dbPath);
 
