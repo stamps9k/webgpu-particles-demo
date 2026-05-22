@@ -28,43 +28,48 @@ logger_api["error_api_db"]("Error debugging enabled for API db connections.");
 /*---------------------------------------------------------------------------*/
 const logger = {
   // Logging for calls made to new webgpu-particles library.
-  super_super_verbose_webgpu: debug("js:wasm:SUPER_SUPER_VERBOSE"),
-  super_verbose_webgpu: debug("js:wasm:SUPER_VERBOSE"),
-  verbose_webgpu: debug("js:wasm:VERBOSE"),
-  info_webgpu: debug("js:wasm:INFO"),
-  warn_webgpu: debug("js:wasm:WARN"),
-  error_webgpu: debug("js:wasm:ERROR"),
+  super_super_verbose_webgpu: debug("js:webgpu:SUPER_SUPER_VERBOSE"),
+  super_verbose_webgpu: debug("js:webgpu:SUPER_VERBOSE"),
+  verbose_webgpu: debug("js:webgpu:VERBOSE"),
+  info_webgpu: debug("js:webgpu:INFO"),
+  warn_webgpu: debug("js:webgpu:WARN"),
+  error_webgpu: debug("js:webgpu:ERROR"),
 
   // Logging for anything managed entirely by this webapp
-  super_super_verbose_webapp: debug("js:opfs:SUPER_SUPER_VERBOSE"),
-  super_verbose_webapp: debug("js:opfs:SUPER_VERBOSE"),
-  verbose_webapp: debug("js:opfs:VERBOSE"),
-  info_webapp: debug("js:opfs:INFO"),
-  warn_webapp: debug("js:opfs:WARN"),
-  error_webapp: debug("js:opfs:ERROR"),
+  super_super_verbose_webapp: debug("js:webapp:SUPER_SUPER_VERBOSE"),
+  super_verbose_webapp: debug("js:webapp:SUPER_VERBOSE"),
+  verbose_webapp: debug("js:webapp:VERBOSE"),
+  info_webapp: debug("js:webapp:INFO"),
+  warn_webapp: debug("js:webapp:WARN"),
+  error_webapp: debug("js:webapp:ERROR"),
 };
 
 logger["super_super_verbose_webgpu"](
-  "Super Super Verbose debugging enabled for JavaScript wasm.",
+  "Super Super Verbose logging enabled for webgpu .",
 );
 logger["super_verbose_webgpu"](
-  "Super Verbose debugging enabled for JavaScript wasm.",
+  "Super Verbose logging enabled for webgpu.",
 );
-logger["verbose_webgpu"]("Verbose debugging enabled for JavaScript wasm.");
-logger["info_webgpu"]("Info debugging enabled for JavaScript wasm.");
-logger["warn_webgpu"]("Warn debugging enabled  for JavaScript wasm.");
-logger["error_webgpu"]("Error debugging enabled for JavaScript wasm.");
+logger["verbose_webgpu"]("Verbose logging enabled for webgpu.");
+logger["info_webgpu"]("Info logging enabled for webgpu.");
+logger["warn_webgpu"]("Warn logging enabled  for webgpu.");
+logger["error_webgpu"]("Error logging enabled for webgpu.");
 
 logger["super_super_verbose_webapp"](
-  "Super Super Verbose debugging enabled for JavaScript OPFS.",
+  "Super Super Verbose logging enabled for webapp.",
 );
 logger["super_verbose_webapp"](
-  "Super Verbose debugging enabled for JavaScript OPFS.",
+  "Super Verbose logging enabled for webapp.",
 );
-logger["verbose_webapp"]("Verbose debugging enabled for JavaScript OPFS.");
-logger["info_webapp"]("Info debugging enabled for JavaScript OPFS.");
-logger["warn_webapp"]("Warn debugging enabled  for JavaScript OPFS.");
-logger["error_webapp"]("Error debugging enabled for JavaScript OPFS.");
+logger["verbose_webapp"]("Verbose logging enabled for webapp.");
+logger["info_webapp"]("Info logging enabled for webapp.");
+logger["warn_webapp"]("Warn logging enabled  for webapp.");
+logger["error_webapp"]("Error logging enabled for webapp.");
+
+console.log("");
+console.log("");
+console.log("");
+
 /*---------------------------------------------------------------------------*/
 
 // Export from this module for access in rest of project

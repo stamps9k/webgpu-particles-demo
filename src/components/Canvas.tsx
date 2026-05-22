@@ -3,35 +3,40 @@ import { useSearchParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { logger } from "../libs/debug_config.mjs";
 import { init_particle_engine } from "../libs/particle_engine.mjs";
-import {
-  init,
-  ParticleEngine,
-  ScatterFadeEffect,
-  EmitterConfig,
-} from "webgpu-particles";
+import { ParticleEngine } from "webgpu-particles";
 
 import ModelForm from "./ModelForm";
 
 const Canvas = () => {
+  // #region --- State and refs ------------------------------------------------
   const button_ref = useRef<HTMLButtonElement>(null);
   const canvas_ref = useRef<HTMLCanvasElement>(null);
   const initialised = useRef(false);
   const [error, set_error] = useState<Error | null>(null);
   const [ctx, set_ctx] = useState<ParticleEngine>();
-
-  //Process any query string parameters
   const [search_params] = useSearchParams();
+  // #endregion --------------------------------------------------------------
 
+  // #region --- Handle URL search params --------------------------------------
   var SHADER_CONFIG: Record<string, string> = {};
   if (search_params.size == 0) SHADER_CONFIG = { "max-particles": "500" };
   else SHADER_CONFIG = Object.fromEntries(search_params);
 
   const SHADER_SET = search_params.get("shader-set") ?? "scatter-fade";
   const EMITTER_SHAPE = search_params.get("emitter-shape") ?? "point";
+  // #endregion --------------------------------------------------------------
 
-  // Create the webgpu context on intial load of page
+  // #region --- Page load processing ------------------------------------------
   useEffect(() => {
+    logger.info_webapp("[Canvas] - Mounted.");
+
+    // #region --- Define an async function for getting the Particle Engine ----
     const run = async () => {
+      logger.verbose_webapp("[Canvas] - Initialising particle engine", {
+        SHADER_SET,
+        EMITTER_SHAPE,
+        SHADER_CONFIG,
+      });
       try {
         const canvas_element = document.getElementById("webgpuCanvas");
         if (!(canvas_element instanceof HTMLCanvasElement)) {
@@ -45,17 +50,31 @@ const Canvas = () => {
           SHADER_CONFIG,
           EMITTER_SHAPE,
         );
+
+        logger.info_webapp("[Canvas] - Particle engine ready");
         set_ctx(new_ctx);
       } catch (error) {
+        logger.error_webapp("[Canvas] - Particle engine failed to initialise", {
+          error,
+        });
         if (error instanceof Error) set_error(error);
       }
     };
-    run();
-  }, []);
+    // #endregion --------------------------------------------------------------
 
+    run();
+
+    return () => logger.info_webapp("[Canvas] - Unmounted");
+  }, []);
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Error processing ----------------------------------------------
   useEffect(() => {
     if (!error) return;
 
+    logger.warn_webapp("[Canvas] - Surfacing error to user via toast", {
+      message: error.message,
+    });
     toast.error(
       <span>
         Error on start:
@@ -64,8 +83,9 @@ const Canvas = () => {
       </span>,
     );
   }, [error]);
+  // #endregion ----------------------------------------------------------------
 
-  //Start animation and register the fullscreen button handler once the WebGPU context is created
+  // #region --- Particles Engine update processing ----------------------------
   useEffect(() => {
     if (!ctx) return;
 
@@ -75,31 +95,51 @@ const Canvas = () => {
     if (initialised.current || !button || !canvas) return;
     initialised.current = true;
 
-    // Add event listener to handle button click
-    button.addEventListener("click", () => {
+    // Monitor the canvas width and height and update when it goes fullscreen
+    const resize_observer = new ResizeObserver(() => {
+      logger.super_verbose_webapp("[Canvas] - Resize observed", {
+        width: canvas.clientWidth,
+        height: canvas.clientHeight,
+      });
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+      ctx.resize(canvas);
+    });
+    resize_observer.observe(canvas);
+
+    // Define the function for fullscreen click handling
+    const handle_click = () => {
       if (ctx !== undefined) {
         if (!document.fullscreenElement) {
+          logger.info_webapp("[Canvas] - Entering fullscreen");
           canvas.requestFullscreen();
         } else {
+          logger.info_webapp("[Canvas] - Exiting fullscreen");
           document.exitFullscreen();
         }
       } else {
-        console.error("No context defined");
+        logger.error_webapp(
+          "[Canvas] - No context defined, cannot toggle fullscreen",
+        );
       }
+    };
 
-      // Monitor the canvas width and height and update when it goes fullscreen
-      const resize_observer = new ResizeObserver(() => {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-        ctx.resize(canvas);
-      });
-      resize_observer.observe(canvas);
-    });
+    // Add event listener to handle button click
+    button.addEventListener("click", handle_click);
 
     //Start the animation
+    logger.verbose_webapp("[Canvas] - Starting animation loop");
     requestAnimationFrame(() => ctx.animate_particles());
-  }, [ctx]);
 
+    //Clean up event listener and observers on unmount
+    return () => {
+      resize_observer.disconnect();
+      button.removeEventListener("click", handle_click);
+    };
+  }, [ctx]);
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Render page ---------------------------------------------------
   return (
     <div>
       <h1>WebGPU Particles Demo</h1>
@@ -116,6 +156,7 @@ const Canvas = () => {
       <ToastContainer />
     </div>
   );
+  // #endregion ----------------------------------------------------------------
 };
 
 export default Canvas;
