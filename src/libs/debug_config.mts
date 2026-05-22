@@ -27,14 +27,6 @@ logger_api["error_api_db"]("Error debugging enabled for API db connections.");
 
 /*---------------------------------------------------------------------------*/
 const logger = {
-  // Logging for calls made to new webgpu-particles library.
-  super_super_verbose_webgpu: debug("js:webgpu:SUPER_SUPER_VERBOSE"),
-  super_verbose_webgpu: debug("js:webgpu:SUPER_VERBOSE"),
-  verbose_webgpu: debug("js:webgpu:VERBOSE"),
-  info_webgpu: debug("js:webgpu:INFO"),
-  warn_webgpu: debug("js:webgpu:WARN"),
-  error_webgpu: debug("js:webgpu:ERROR"),
-
   // Logging for anything managed entirely by this webapp
   super_super_verbose_webapp: debug("js:webapp:SUPER_SUPER_VERBOSE"),
   super_verbose_webapp: debug("js:webapp:SUPER_VERBOSE"),
@@ -43,17 +35,6 @@ const logger = {
   warn_webapp: debug("js:webapp:WARN"),
   error_webapp: debug("js:webapp:ERROR"),
 };
-
-logger["super_super_verbose_webgpu"](
-  "Super Super Verbose logging enabled for webgpu .",
-);
-logger["super_verbose_webgpu"](
-  "Super Verbose logging enabled for webgpu.",
-);
-logger["verbose_webgpu"]("Verbose logging enabled for webgpu.");
-logger["info_webgpu"]("Info logging enabled for webgpu.");
-logger["warn_webgpu"]("Warn logging enabled  for webgpu.");
-logger["error_webgpu"]("Error logging enabled for webgpu.");
 
 logger["super_super_verbose_webapp"](
   "Super Super Verbose logging enabled for webapp.",
