@@ -1,20 +1,57 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { Collapse } from "bootstrap";
+import { logger } from "../libs/debug_config.mjs";
 
 import ShaderSetRow from "./ShaderSetRow.js";
 import ShaderConfigRows from "./ShadersConfigRows.js";
 
 const ModelForm = () => {
+  // #region --- State and refs ------------------------------------------------
+  const collapse_ref = useRef<Collapse | null>(null);
   const [toggle, set_toggle] = useState(false);
+  // #endregion ----------------------------------------------------------------
 
-  //Activate collapse effect
+  // #region --- Page load processing ------------------------------------------
   useEffect(() => {
-    var my_collapse = document.getElementById("collapseOne") as HTMLElement;
-    var bs_collapse = new Collapse(my_collapse, { toggle: false });
-    toggle ? bs_collapse.show() : bs_collapse.hide();
-  }, []);
+    logger.info_webapp("[ModelForm] - Mounted.");
 
+    const my_collapse = document.getElementById("collapseOne") as HTMLElement;
+    if (!my_collapse) {
+      logger.error_webapp("[ModelForm] - collapseOne element not found.");
+      return;
+    }
+    collapse_ref.current = new Collapse(my_collapse, { toggle: false });
+
+    return () => {
+      collapse_ref.current?.dispose();
+      logger.info_webapp("[ModelForm] - Unmounted.");
+    };
+  }, []);
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Collapse toggle processing ------------------------------------
+  useEffect(() => {
+    logger.verbose_webapp("[ModelForm] - Applying collapse state", { toggle });
+
+    if (!collapse_ref.current) {
+      logger.error_webapp("[ModelForm] - Collapse instance not initialised.");
+      return;
+    }
+
+    toggle ? collapse_ref.current.show() : collapse_ref.current.hide();
+  }, [toggle]);
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Event handlers ------------------------------------------------
+  const handle_collapse_click = () => {
+    logger.info_webapp("[ModelForm] - Collapse toggled", {
+      new_state: !toggle,
+    });
+    set_toggle((t) => !t);
+  };
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Render page ---------------------------------------------------
   return (
     <div id="accordion">
       <div
@@ -23,9 +60,8 @@ const ModelForm = () => {
         <div className="col-3">
           <a
             className="btn btn-primary"
-            data-bs-toggle="collapse"
-            href="#collapseOne"
-            aria-expanded="false"
+            onClick={handle_collapse_click}
+            aria-expanded={toggle}
             aria-controls="collapseOne">
             Choose Shaders
           </a>
@@ -58,6 +94,7 @@ const ModelForm = () => {
       </div>
     </div>
   );
+  // #endregion ----------------------------------------------------------------
 };
 
 export default ModelForm;
