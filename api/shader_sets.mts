@@ -27,6 +27,7 @@ var all_shader_configs_query_string = `SELECT
 	shader_configs.name AS shader_config_name, 
 	shader_configs.display_name AS shader_config_display_name,
 	shader_configs.validation_expression AS shader_config_validation_expression,
+	shader_configs.default_value AS shader_config_default_value,
 	config_types.name AS config_type_name
 	FROM shader_configs
 	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id
@@ -37,6 +38,7 @@ var shader_configs_query_string = `SELECT
 	shader_configs.name AS shader_config_name, 
 	shader_configs.display_name AS shader_config_display_name,
 	shader_configs.validation_expression AS shader_config_validation_expression,
+	shader_configs.default_value AS shader_config_default_value,
 	config_types.name AS config_type_name
 	FROM shader_configs
 	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id 

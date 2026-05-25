@@ -98,6 +98,14 @@ const ShaderConfigRows = () => {
             results[shader_config_id] = all_options;
             break;
           default:
+            if (
+              search_params.get(shader_config["shader_config_name"]) == null
+            ) {
+              search_params.set(
+                shader_config["shader_config_name"],
+                shader_config["shader_config_default_value"],
+              );
+            }
             break;
         }
       }
