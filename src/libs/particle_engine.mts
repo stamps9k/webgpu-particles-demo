@@ -1,4 +1,4 @@
-import { EmitterConfig, ParticleEffect, ParticleEngine, ScatterFadeEffect, ScatterSwirlEffect, FireworksEffect } from "webgpu-particles";
+import { EmitterConfig, ParticleEffect, ParticleEngine, ScatterFadeEffect, ScatterSwirlEffect, FireworksEffect, BoidsEffect } from "webgpu-particles";
 import { logger } from "./debug_config.mjs";
 
 /**
@@ -54,6 +54,17 @@ function generate_particle_effect(shader_set: string, shader_config: Record<stri
 			return new ScatterSwirlEffect(Number.parseInt(shader_config["max-particles"]));
 		case "FIREWORKS":
 			return new FireworksEffect(Number.parseInt(shader_config["max-particles"]), Number.parseInt(shader_config["rocket-count"]));
+		case "BOIDS":
+			return new BoidsEffect(
+				Number.parseInt(shader_config["max-particles"]),
+				Number.parseInt(shader_config["perception-radius"]),
+				Number.parseInt(shader_config["seperation-radius"]),
+				Number.parseInt(shader_config["seperation-weight"]),
+				Number.parseInt(shader_config["alignment-weight"]),
+				Number.parseInt(shader_config["cohesion-weight"]),
+				Number.parseInt(shader_config["max-speed"]),
+				Number.parseInt(shader_config["max-force"])
+			);
 		default:
 			logger.error_webapp("[Particle Engine] - Unknown shader set.", { shader_set });
 			throw new Error("Unknown shader set " + shader_set + " given.");
