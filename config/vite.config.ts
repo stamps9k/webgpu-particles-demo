@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
   server: {
     port: 8080,
@@ -13,4 +13,6 @@ export default defineConfig({
       },
     },
   },
-});
+  // Exclude the webgpu-particles library from optimization during dev so that I can debug.
+  optimizeDeps: command === "serve" ? { exclude: ["webgpu-particles"] } : {},
+}));
