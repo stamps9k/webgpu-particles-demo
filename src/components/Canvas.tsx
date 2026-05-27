@@ -11,7 +11,8 @@ const Canvas = () => {
   // #region --- State and refs ------------------------------------------------
   const button_ref = useRef<HTMLButtonElement>(null);
   const canvas_ref = useRef<HTMLCanvasElement>(null);
-  const initialised = useRef(false);
+  const initialised_listeners = useRef(false);
+  const initialised_engine = useRef(false);
   const [error, set_error] = useState<Error | null>(null);
   const [ctx, set_ctx] = useState<ParticleEngine>();
   const [search_params] = useSearchParams();
@@ -62,6 +63,10 @@ const Canvas = () => {
     };
     // #endregion --------------------------------------------------------------
 
+    //Guard against double initialisation in development mode with React.StrictMode
+    if (initialised_engine.current) return;
+    initialised_engine.current = true;
+
     run();
 
     return () => logger.info_webapp("[Canvas] - Unmounted");
@@ -92,8 +97,8 @@ const Canvas = () => {
     const button = button_ref.current;
     const canvas = canvas_ref.current;
 
-    if (initialised.current || !button || !canvas) return;
-    initialised.current = true;
+    if (initialised_listeners.current || !button || !canvas) return;
+    initialised_listeners.current = true;
 
     // Monitor the canvas width and height and update when it goes fullscreen
     const resize_observer = new ResizeObserver(() => {
