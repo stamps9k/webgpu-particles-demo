@@ -39,6 +39,11 @@
   text-shadow: none; /* Prevent inheritance from `body` */
 }
 
+/* Custom border between buttons in a button group */
+.btn-group .btn-secondary {
+  border-color: #333;
+}
+
 /*
  * Base structure
  */

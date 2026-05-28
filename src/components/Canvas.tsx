@@ -169,12 +169,12 @@ const Canvas = () => {
       <div className="btn-group w-100">
         <button
           id="fullscreen-btn"
-          className="btn btn-outline-secondary w-50"
+          className="btn btn-secondary w-50"
           ref={button_ref}>
           <i className="bi bi-arrows-fullscreen" /> Fullscreen
         </button>
         <button
-          className={`btn btn-outline-secondary w-50 ${paused ? "active" : ""}`}
+          className={`btn btn-secondary w-50 ${paused ? "active" : ""}`}
           onClick={() => set_paused((p) => !p)}>
           <i className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`} />{" "}
           {`${paused ? "Play" : "Pause"}`}
