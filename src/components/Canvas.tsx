@@ -166,14 +166,20 @@ const Canvas = () => {
         ref={canvas_ref}
         width="734"
         height="478"></canvas>
-      <button id="fullscreen-btn" ref={button_ref}>
-        Fullscreen
-      </button>
-      <button
-        className={`btn btn-outline-secondary ${paused ? "active" : ""}`}
-        onClick={() => set_paused((p) => !p)}>
-        <i className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`} />
-      </button>
+      <div className="btn-group w-100">
+        <button
+          id="fullscreen-btn"
+          className="btn btn-outline-secondary w-50"
+          ref={button_ref}>
+          <i className="bi bi-arrows-fullscreen" /> Fullscreen
+        </button>
+        <button
+          className={`btn btn-outline-secondary w-50 ${paused ? "active" : ""}`}
+          onClick={() => set_paused((p) => !p)}>
+          <i className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`} />{" "}
+          {`${paused ? "Play" : "Pause"}`}
+        </button>
+      </div>
       <ToastContainer />
     </div>
   );
