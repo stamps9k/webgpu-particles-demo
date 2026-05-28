@@ -61,6 +61,7 @@
   "dependencies": {
     "better-sqlite3": "^12.9.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "cors": "^2.8.6",
     "debug": "^4.4.3",
     "express": "^5.2.1",

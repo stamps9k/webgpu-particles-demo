@@ -15,6 +15,7 @@ const Canvas = () => {
   const initialised_engine = useRef(false);
   const [error, set_error] = useState<Error | null>(null);
   const [ctx, set_ctx] = useState<ParticleEngine>();
+  const [paused, set_paused] = useState<Boolean>(false);
   const [search_params] = useSearchParams();
   // #endregion --------------------------------------------------------------
 
@@ -71,6 +72,16 @@ const Canvas = () => {
 
     return () => logger.info_webapp("[Canvas] - Unmounted");
   }, []);
+  // #endregion ----------------------------------------------------------------
+
+  // #region --- Pause processing ----------------------------------------------
+  useEffect(() => {
+    //Only do anything if the context is set up
+    if (!ctx) return;
+
+    if (paused) ctx.pause();
+    else ctx.resume();
+  }, [paused]);
   // #endregion ----------------------------------------------------------------
 
   // #region --- Error processing ----------------------------------------------
@@ -157,6 +168,11 @@ const Canvas = () => {
         height="478"></canvas>
       <button id="fullscreen-btn" ref={button_ref}>
         Fullscreen
+      </button>
+      <button
+        className={`btn btn-outline-secondary ${paused ? "active" : ""}`}
+        onClick={() => set_paused((p) => !p)}>
+        <i className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`} />
       </button>
       <ToastContainer />
     </div>
