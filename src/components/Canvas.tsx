@@ -124,7 +124,7 @@ const Canvas = () => {
     resize_observer.observe(canvas);
 
     // Define the function for fullscreen click handling
-    const handle_click = () => {
+    const handle_fs_click = () => {
       if (ctx !== undefined) {
         if (!document.fullscreenElement) {
           logger.info_webapp("[Canvas] - Entering fullscreen");
@@ -141,7 +141,7 @@ const Canvas = () => {
     };
 
     // Add event listener to handle button click
-    button.addEventListener("click", handle_click);
+    button.addEventListener("click", handle_fs_click);
 
     //Start the animation
     logger.verbose_webapp("[Canvas] - Starting animation loop");
@@ -150,7 +150,7 @@ const Canvas = () => {
     //Clean up event listener and observers on unmount
     return () => {
       resize_observer.disconnect();
-      button.removeEventListener("click", handle_click);
+      button.removeEventListener("click", handle_fs_click);
     };
   }, [ctx]);
   // #endregion ----------------------------------------------------------------
