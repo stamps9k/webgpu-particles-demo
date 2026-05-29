@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { logger } from "../libs/debug_config.mjs";
 import { init_particle_engine } from "../libs/particle_engine.mjs";
-import { ParticleEngine } from "webgpu-particles";
+import { ParticleEngine, EmitterConfigPatch } from "webgpu-particles";
 
 import ModelForm from "./ModelForm";
 
@@ -120,6 +120,14 @@ const Canvas = () => {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
       ctx.resize(canvas);
+      ctx.update_emitter(
+        new EmitterConfigPatch(
+          null,
+          [canvas.width / 2, canvas.height / 2],
+          canvas.width,
+          canvas.height,
+        ),
+      );
     });
     resize_observer.observe(canvas);
 
