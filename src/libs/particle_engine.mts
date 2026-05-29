@@ -1,5 +1,7 @@
-import { EmitterConfig, ParticleEffect, ParticleEngine, ScatterFadeEffect, ScatterSwirlEffect, FireworksEffect, BoidsEffect } from "webgpu-particles";
+import { EmitterConfig, EmitterShape, ParticleEffect, ParticleEngine, ScatterFadeEffect, ScatterSwirlEffect, FireworksEffect, BoidsEffect, EmitterConfigPatch } from "webgpu-particles";
 import { logger } from "./debug_config.mjs";
+
+let emitter_config: EmitterConfig | null = null;
 
 /**
  * Call to library's init function
@@ -16,7 +18,6 @@ async function init_particle_engine(canvas: HTMLCanvasElement, shader_set: strin
 	const effect = generate_particle_effect(shader_set, shader_config); // Generate the particle effect based on the shader set and configuration options provided.
 	
 	// Generate the emitter configuration based on the emitter type and the dimensions of the canvas.
-	let emitter_config = undefined;
 	switch (shader_set) {
 		case "fireworks":
 			emitter_config = generate_emitter_config("RECTANGLE", [canvas.width / 2, canvas.height], canvas.width, 0);
@@ -36,6 +37,33 @@ async function init_particle_engine(canvas: HTMLCanvasElement, shader_set: strin
 		throw e;
 	}
 
+}
+
+function resize_canvas(ctx: ParticleEngine, canvas: HTMLCanvasElement) {
+	if (emitter_config === null) { return }
+	
+	let emitter_config_patch: EmitterConfigPatch = new EmitterConfigPatch();
+	switch (emitter_config.shape) {
+		case EmitterShape.Point:
+			emitter_config_patch.pos = [canvas.width / 2, canvas.height / 2],
+			emitter_config_patch.p1 = null,
+			emitter_config_patch.p2 = null
+			break;
+		case EmitterShape.Circle:
+			emitter_config_patch.pos = [canvas.width / 2, canvas.height / 2],
+			emitter_config_patch.p1 = 150,
+			emitter_config_patch.p2 = null
+			break;
+		case EmitterShape.Rectangle:
+			emitter_config_patch.pos = [canvas.width / 2, canvas.height / 2],
+			emitter_config_patch.p1 = canvas.width,
+			emitter_config_patch.p2 = canvas.height
+			break;
+	}
+	
+
+	ctx.resize(canvas);
+	ctx.update_emitter(emitter_config_patch);
 }
 
 /**
@@ -84,15 +112,15 @@ function generate_emitter_config(emitter_type: string, emitter_pos: [number, num
 	logger.verbose_webapp("[Particle Engine] - Generating emitter config.", { emitter_type, emitter_pos, emitter_p1, emitter_p2 });
 	switch (emitter_type.toUpperCase()) {
 		case "POINT":
-			return new EmitterConfig("point", emitter_pos, null, null);
+			return new EmitterConfig(EmitterShape.Point, emitter_pos, null, null);
 		case "CIRCLE":
-			return new EmitterConfig("circle", emitter_pos, 50, null);
+			return new EmitterConfig(EmitterShape.Circle, emitter_pos, 150, null);
 		case "RECTANGLE":
-			return new EmitterConfig("rect", emitter_pos, emitter_p1, emitter_p2);
+			return new EmitterConfig(EmitterShape.Rectangle, emitter_pos, emitter_p1, emitter_p2);
 		default:
 			logger.error_webapp("[Particle Engine] - Unknown emitter type.", { emitter_type });
 			throw new Error("Unknown emitter type " + emitter_type + " given.");	
 	}
 } 
 
-export { init_particle_engine }
+export { init_particle_engine, resize_canvas }
