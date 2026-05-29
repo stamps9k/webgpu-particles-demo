@@ -201,6 +201,7 @@ const ShaderConfigRows = () => {
             </div>
             <div id="configElement" className="col-1">
               <input
+                key={config_item.shader_config_id}
                 id={config_item.shader_config_display_name}
                 name={config_item.shader_config_name}
                 type="text"
