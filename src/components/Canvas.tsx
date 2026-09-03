@@ -165,10 +165,8 @@ const Canvas = () => {
       <ModelForm />
       <canvas
         id="webgpuCanvas"
-        className="border"
-        ref={canvas_ref}
-        width="734"
-        height="478"></canvas>
+        className="particle-canvas border"
+        ref={canvas_ref}></canvas>
       <div className="btn-group w-100">
         <button
           id="fullscreen-btn"
