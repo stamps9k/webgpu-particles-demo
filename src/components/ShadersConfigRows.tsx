@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { logger } from "../libs/debug_config.mjs";
+import InfoIcon from "./InfoIcon";
 
 const ShaderConfigRows = () => {
   // #region --- State and refs ------------------------------------------------
@@ -197,7 +198,15 @@ const ShaderConfigRows = () => {
             id={index.toString()}
             className="ms-auto text-start py-1 row">
             <div id="configLabel" className="col-3">
-              <label htmlFor="config">{config_item.shader_config_name}:</label>
+              <label htmlFor="config">
+                <span className="text-truncate">
+                  {config_item.shader_config_name}:
+                </span>
+                <InfoIcon
+                  text={config_item.shader_config_tooltip}
+                  label={config_item.shader_config_name}
+                />
+              </label>
             </div>
             <div id="configElement" className="col-1">
               <input
@@ -230,7 +239,13 @@ const ShaderConfigRows = () => {
             className="ms-auto text-start py-1 row">
             <div id="configLabel" className="col-3">
               <label htmlFor="config">
-                {config_item.shader_config_display_name}:
+                <span className="text-truncate">
+                  {config_item.shader_config_display_name}:
+                </span>
+                <InfoIcon
+                  text={config_item.shader_config_tooltip}
+                  label={config_item.shader_config_display_name}
+                />
               </label>
             </div>
             <div id="configElement" className="col-1">

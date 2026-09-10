@@ -27,7 +27,6 @@ console.log("");
 
 app.get("/{*path}", (req, res) => {
   console.log(req.path);
-  console.log("Test");
   res.sendFile(path.join(__dirname, "index.html"));
 });
 

@@ -161,25 +161,44 @@ const Canvas = () => {
   // #region --- Render page ---------------------------------------------------
   return (
     <div>
-      <h1>WebGPU Particles Demo</h1>
-      <ModelForm />
-      <canvas
-        id="webgpuCanvas"
-        className="particle-canvas border"
-        ref={canvas_ref}></canvas>
-      <div className="btn-group w-100">
-        <button
-          id="fullscreen-btn"
-          className="btn btn-secondary w-50"
-          ref={button_ref}>
-          <i className="bi bi-arrows-fullscreen" /> Fullscreen
-        </button>
-        <button
-          className={`btn btn-secondary w-50 ${paused ? "active" : ""}`}
-          onClick={() => set_paused((p) => !p)}>
-          <i className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`} />{" "}
-          {`${paused ? "Play" : "Pause"}`}
-        </button>
+      <h1 className="text-center mb-4">Particle Playground</h1>
+      <div className="stage-wrap position-relative">
+        <div className="card mb-3">
+          <div className="card-body">
+            <canvas
+              id="webgpuCanvas"
+              className="particle-canvas border"
+              ref={canvas_ref}></canvas>
+            <div className="hud d-flex flex-wrap justify-content-between text-secondary border-top pt-2 mt-2 small">
+              <span>
+                particles <b>{SHADER_CONFIG["max-particles"] ?? "—"}</b>
+              </span>
+              <span>
+                shader <span className="hud-accent">{SHADER_SET}</span>
+              </span>
+              <span>
+                emitter <b>{EMITTER_SHAPE}</b>
+              </span>
+            </div>
+          </div>
+          <div className="btn-group w-100">
+            <button
+              id="fullscreen-btn"
+              className="btn btn-secondary w-50"
+              ref={button_ref}>
+              <i className="bi bi-arrows-fullscreen" /> Fullscreen
+            </button>
+            <button
+              className={`btn btn-secondary w-50 ${paused ? "active" : ""}`}
+              onClick={() => set_paused((p) => !p)}>
+              <i
+                className={`bi ${paused ? "bi-play-fill" : "bi-pause-fill"}`}
+              />{" "}
+              {`${paused ? "Play" : "Pause"}`}
+            </button>
+          </div>
+        </div>
+        <ModelForm />
       </div>
       <ToastContainer />
     </div>

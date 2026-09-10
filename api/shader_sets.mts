@@ -2,13 +2,13 @@
 import { fileURLToPath } from "url";
 import express from "express";
 import db_import from "better-sqlite3";
-import { dirname, join } from 'path';
+import { dirname, join } from "path";
 
 import { logger_api } from "../src/libs/debug_config.mjs";
 
 // Variables
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const dbPath = join(__dirname, '../database/app.db');
+const dbPath = join(__dirname, "../database/app.db");
 
 const db = db_import(dbPath);
 
@@ -28,6 +28,7 @@ var all_shader_configs_query_string = `SELECT
 	shader_configs.display_name AS shader_config_display_name,
 	shader_configs.validation_expression AS shader_config_validation_expression,
 	shader_configs.default_value AS shader_config_default_value,
+	shader_configs.tooltip AS shader_config_tooltip,
 	config_types.name AS config_type_name
 	FROM shader_configs
 	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id
@@ -39,6 +40,7 @@ var shader_configs_query_string = `SELECT
 	shader_configs.display_name AS shader_config_display_name,
 	shader_configs.validation_expression AS shader_config_validation_expression,
 	shader_configs.default_value AS shader_config_default_value,
+	shader_configs.tooltip AS shader_config_tooltip,
 	config_types.name AS config_type_name
 	FROM shader_configs
 	INNER JOIN config_types ON shader_configs.config_type_id = config_types.config_type_id 

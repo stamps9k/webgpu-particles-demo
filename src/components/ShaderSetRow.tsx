@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { logger } from "../libs/debug_config.mjs";
+import { get_param_help } from "../libs/param_help.mjs";
+import InfoIcon from "./InfoIcon";
 
 const ShaderSetRow = () => {
   // #region --- State and refs ------------------------------------------------
@@ -52,7 +54,10 @@ const ShaderSetRow = () => {
   return (
     <div id="shaderRow" className="ms-auto text-start py-1 row">
       <div id="shaderLabel" className="col-3">
-        <label htmlFor="shader">Shader: </label>
+        <label htmlFor="shader">
+          <span className="text-truncate">Shader: </span>
+          <InfoIcon text={get_param_help("shader-set")} label="Shader" />
+        </label>
       </div>
       <div id="shaderElement" className="col-1">
         <select
