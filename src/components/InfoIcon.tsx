@@ -1,5 +1,15 @@
 import { useEffect, useRef } from "react";
-import { Tooltip } from "bootstrap";
+import type { Tooltip } from "bootstrap";
+
+// Bootstrap's JS is loaded globally via CDN <script> in index.html (see
+// index.html and the project's ways-of-working notes) rather than bundled
+// through npm, so we only pull in its types here and reach the runtime
+// class off `window.bootstrap`.
+declare global {
+  interface Window {
+    bootstrap: typeof import("bootstrap");
+  }
+}
 
 interface InfoIconProps {
   text: string;
@@ -22,7 +32,7 @@ const InfoIcon = ({ text, label }: InfoIconProps) => {
     const el = icon_ref.current;
     if (!el) return;
 
-    tooltip_ref.current = new Tooltip(el, {
+    tooltip_ref.current = new window.bootstrap.Tooltip(el, {
       title: text,
       placement: "top",
       trigger: "hover focus",
