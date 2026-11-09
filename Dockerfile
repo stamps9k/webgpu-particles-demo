@@ -4,7 +4,7 @@
 # --- Build stage -----------------------------------------------------
 # Has Vite, TypeScript, bootstrap, all devDependencies. Discarded after
 # this stage - none of it becomes part of the shipped image.
-FROM node:22-slim AS builder
+FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -61,7 +61,7 @@ RUN npm rebuild better-sqlite3
 # npm ci here, so this stage never needs to re-fetch the git+ssh
 # dependency (webgpu-particles) a second time. Both stages use the same
 # base image, so the native better-sqlite3 build carries over cleanly.
-FROM node:22-slim AS runtime
+FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
