@@ -34,7 +34,8 @@
     "lint": "eslint . --config config/eslint.config.mjs",
     "format:check": "prettier --check . --config config/.prettierrc",
     "format:fix": "prettier --write . --config config/.prettierrc",
-    "prepare": "husky"
+    "prepare": "husky",
+    "audit:ci": "npx --yes audit-ci@7.1.0 --config audit-ci.jsonc"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
@@ -63,13 +64,13 @@
     "bootstrap-icons": "^1.13.1",
     "cors": "^2.8.6",
     "debug": "^4.4.3",
-		"dotenv": "^16.4.7",
+    "dotenv": "^16.4.7",
     "express": "^5.2.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.1",
     "react-toastify": "^11.0.5",
-    "tsup": "^8.5.1",
+    "tsup": "^9.0.0",
     "webgpu-particles": "github:stamps9k/webgpu-particles-dist"
   },
   "lint-staged": {
@@ -80,5 +81,11 @@
   },
   "allowScripts": {
     "better-sqlite3": true
+  },
+  "overrides": {
+    "minimatch@>=7.0.0 <11.0.1": "^11.0.5",
+    "nodemon": {
+      "minimatch": "^11.0.5"
+    }
   }
 }
