@@ -39,9 +39,7 @@ const logger = {
 logger["super_super_verbose_webapp"](
   "Super Super Verbose logging enabled for webapp.",
 );
-logger["super_verbose_webapp"](
-  "Super Verbose logging enabled for webapp.",
-);
+logger["super_verbose_webapp"]("Super Verbose logging enabled for webapp.");
 logger["verbose_webapp"]("Verbose logging enabled for webapp.");
 logger["info_webapp"]("Info logging enabled for webapp.");
 logger["warn_webapp"]("Warn logging enabled  for webapp.");

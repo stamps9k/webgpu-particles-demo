@@ -9,23 +9,23 @@ export default [
     rules: {
       "@typescript-eslint/naming-convention": [
         "error",
-        { 
-					selector: "function",
-					format: ["snake_case"],
-					filter: { regex: "^[A-Z][a-z]", match: false }
-				},
+        {
+          selector: "function",
+          format: ["snake_case"],
+          filter: { regex: "^[A-Z][a-z]", match: false },
+        },
         { selector: "classMethod", format: ["snake_case"] },
         { selector: "class", format: ["PascalCase"] },
         {
-					selector: "variable",
-					format: ["snake_case", "UPPER_CASE"],
-					filter: { regex: "^[A-Z][a-z]", match: false }
-				},
-				{
-					selector: "variable",
-					format: ["PascalCase"],
-					filter: { regex: "^[A-Z][a-z]", match: true }
-				},
+          selector: "variable",
+          format: ["snake_case", "UPPER_CASE"],
+          filter: { regex: "^[A-Z][a-z]", match: false },
+        },
+        {
+          selector: "variable",
+          format: ["PascalCase"],
+          filter: { regex: "^[A-Z][a-z]", match: true },
+        },
       ],
     },
   },
