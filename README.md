@@ -2,27 +2,27 @@
 
 A Vite + React + TypeScript showcase application for the [`webgpu-particles`](https://github.com/stamps9k/webgpu-particles-dist) library. Demonstrates all available GPU-accelerated particle effects with interactive controls.
 
-> **Live site:** [stampatron.com](https://wgpu.stampatron.com)
+> **Live site:** [wgpu.stampatron.com](https://wgpu.stampatron.com)
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18, TypeScript, React Router |
-| Styling | Bootstrap (Starter Template) |
-| Build tool | Vite |
-| Backend API | Express |
-| Graphics | [`webgpu-particles`](https://github.com/stamps9k/webgpu-particles-dist) |
-| Dev environment | Docker (port 8080), Alpine Linux |
+| Layer           | Technology                                                              |
+| --------------- | ----------------------------------------------------------------------- |
+| Frontend        | React 19, TypeScript, React Router 7                                    |
+| Styling         | Bootstrap 5 and Bootstrap Icons                                         |
+| Build tool      | Vite                                                                    |
+| Backend API     | Express, SQLite (better-sqlite3)                                        |
+| Graphics        | [`webgpu-particles`](https://github.com/stamps9k/webgpu-particles-dist) |
+| Dev environment | Docker (Vite on port 8080)                                              |
 
 ---
 
 ## Prerequisites
 
 - A browser with [WebGPU support](https://caniuse.com/webgpu) (Chrome 113+, Edge 113+)
-- Node.js 18+
+- Node.js 22.18+ (required by tsup 9 and Vite 8)
 - Docker (optional, for containerised development and deployment)
 
 ---
@@ -38,8 +38,8 @@ npm install
 ### Run in development
 
 ```bash
-npm run start-dev   # Database api
-npm run dev         # Webserver from Vite
+npm run start-dev   # Express API on port 3000 (restarts on change)
+npm run dev         # Vite dev server on port 8080
 ```
 
 The Vite dev server starts on [http://localhost:8080](http://localhost:8080). API requests to `/api` are proxied to the Express backend automatically.
@@ -68,24 +68,30 @@ webgpu-particles-demo/
 
 ## Effects Showcased
 
-| Effect | Description |
-|---|---|
-| **Scatter** | Gravity-driven particles emitted from a configurable point or area |
-| **Fireworks** | Two-phase rockets that burst into velocity-stretched sparks |
-| **Vortex** | Particles that spiral around a central attractor |
+| Effect            | Description                                                            |
+| ----------------- | ---------------------------------------------------------------------- |
+| **Scatter Fade**  | Particles burst out from the emitter, fall under gravity and fade out  |
+| **Scatter Swirl** | Particles spiral around the emitter like a vortex                      |
+| **Fireworks**     | Two-phase rockets that burst into velocity-stretched sparks            |
+| **Boids**         | Flocking simulation with adjustable separation, alignment and cohesion |
 
 ---
 
 ## API
 
-The Express backend is served alongside the frontend and handles any server-side concerns. In development, Vite proxies `/api/*` requests to the Express server. In production, routing is handled at the infrastructure level.
+The Express backend serves the shader sets and shader configs the controls are built from, read from the SQLite database in `database/`. In development, Vite proxies `/api/*` requests to the Express server. In production, `npm run build` then `npm run start-prod` runs a single Express server that serves both the built frontend from `dist/` and the API.
 
-### Development proxy (vite.config.ts)
+### Development proxy (config/vite.config.ts)
 
 ```ts
 server: {
+  port: 8080,
+  host: true, // needed in Docker: binds to 0.0.0.0 instead of localhost
   proxy: {
-    '/api': 'http://localhost:3000',
+    "/api": {
+      target: "http://localhost:3000",
+      changeOrigin: true,
+    },
   },
 },
 ```
